@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Luiz Melque — QA Analyst Jr.</title>
+<meta name="description" content="Portfólio de Luiz Melque Almeida de Jesus, QA Analyst Jr. — testes manuais, API testing e automação com Cypress e Playwright.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0F1417;
+    --panel:#161D21;
+    --panel-2:#131A1D;
+    --border:#29333A;
+    --text:#E9EEF0;
+    --muted:#8FA0A6;
+    --pass:#4ADE94;
+    --pending:#E8B339;
+    --link:#5EB1EF;
+    --radius:6px;
+    --maxw:960px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--ink);
+    color:var(--text);
+    font-family:'Inter', sans-serif;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  body::before{
+    content:"";
+    position:fixed; inset:0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+    background-size:40px 40px;
+    pointer-events:none;
+    z-index:0;
+  }
+  a{color:var(--link); text-decoration:none;}
+  a:hover{text-decoration:underline;}
+  h1,h2,h3{font-family:'Space Grotesk', sans-serif; font-weight:600; letter-spacing:-0.01em;}
+  .mono{font-family:'JetBrains Mono', monospace;}
+  .wrap{max-width:var(--maxw); margin:0 auto; padding:0 24px; position:relative; z-index:1;}
+
+  :focus-visible{outline:2px solid var(--link); outline-offset:3px;}
+
+  /* ---------- NAV ---------- */
+  nav{
+    position:sticky; top:0; z-index:50;
+    background:rgba(15,20,23,0.85);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--border);
+  }
+  nav .wrap{display:flex; align-items:center; justify-content:space-between; height:60px;}
+  .brand{font-family:'JetBrains Mono', monospace; font-size:14px; font-weight:600; color:var(--text);}
+  .brand span{color:var(--pass);}
+  nav ul{list-style:none; display:flex; gap:28px;}
+  nav ul a{color:var(--muted); font-size:14px; font-weight:500;}
+  nav ul a:hover{color:var(--text); text-decoration:none;}
+  .nav-toggle{display:none;}
+
+  /* ---------- HERO / TERMINAL ---------- */
+  header.hero{padding:80px 0 64px;}
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px; color:var(--pass);
+    text-transform:uppercase; letter-spacing:0.08em;
+    display:flex; align-items:center; gap:8px; margin-bottom:18px;
+  }
+  .eyebrow::before{content:"●"; font-size:9px;}
+  .hero h1{font-size:clamp(30px, 5vw, 46px); line-height:1.15; margin-bottom:14px;}
+  .hero .role{color:var(--muted); font-size:17px; max-width:560px; margin-bottom:8px;}
+  .hero .loc{color:var(--muted); font-size:14px; font-family:'JetBrains Mono', monospace; margin-bottom:34px;}
+
+  .terminal{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    overflow:hidden;
+    box-shadow:0 20px 60px -20px rgba(0,0,0,0.6);
+  }
+  .terminal-bar{
+    display:flex; align-items:center; gap:8px;
+    padding:10px 14px;
+    background:var(--panel-2);
+    border-bottom:1px solid var(--border);
+  }
+  .dot{width:10px; height:10px; border-radius:50%;}
+  .dot.red{background:#E5665A;}
+  .dot.yellow{background:#E8B339;}
+  .dot.green{background:#4ADE94;}
+  .terminal-title{
+    margin-left:8px; font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--muted);
+  }
+  .terminal-body{
+    padding:22px 20px 26px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:13.5px;
+    min-height:210px;
+  }
+  .terminal-line{margin-bottom:6px; white-space:pre-wrap; word-break:break-word;}
+  .prompt-char{color:var(--pass);}
+  .cmd-text{color:var(--text);}
+  .cursor{display:inline-block; width:7px; height:14px; background:var(--pass); vertical-align:middle; margin-left:2px; animation:blink 1s step-end infinite;}
+  @keyframes blink{50%{opacity:0;}}
+  .out-line{color:var(--muted); display:flex; gap:8px; align-items:flex-start;}
+  .out-line .icon{flex-shrink:0;}
+  .out-line.pass .icon{color:var(--pass);}
+  .out-line.pending .icon{color:var(--pending);}
+  .out-line .label{color:var(--text);}
+  .summary-line{margin-top:10px; padding-top:10px; border-top:1px dashed var(--border); color:var(--muted);}
+  .summary-line b{color:var(--pass);}
+
+  .hero-cta{display:flex; flex-wrap:wrap; gap:12px; margin-top:28px;}
+  .btn{
+    font-family:'Inter', sans-serif; font-size:14px; font-weight:600;
+    padding:11px 20px; border-radius:var(--radius);
+    border:1px solid var(--border);
+    display:inline-flex; align-items:center; gap:8px;
+    transition:border-color .15s ease, background .15s ease;
+  }
+  .btn:hover{text-decoration:none; border-color:var(--pass);}
+  .btn-primary{background:var(--pass); color:#0F1417; border-color:var(--pass); font-weight:700;}
+  .btn-primary:hover{background:#3fc985; border-color:#3fc985;}
+  .btn-ghost{color:var(--text);}
+
+  /* ---------- SECTION SHELL ---------- */
+  section{padding:56px 0;}
+  .suite-head{
+    display:flex; align-items:baseline; gap:14px; margin-bottom:26px;
+    border-bottom:1px solid var(--border); padding-bottom:14px;
+  }
+  .suite-head h2{font-size:22px;}
+  .suite-tag{
+    font-family:'JetBrains Mono', monospace; font-size:11px;
+    color:var(--ink); background:var(--pass);
+    padding:3px 8px; border-radius:4px; font-weight:700;
+    text-transform:uppercase; letter-spacing:0.04em;
+  }
+  .suite-tag.pending{background:var(--pending);}
+  .suite-path{font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--muted); margin-left:auto;}
+
+  /* ---------- ABOUT ---------- */
+  .about-grid{display:grid; grid-template-columns:1.5fr 1fr; gap:40px;}
+  .about-grid p{color:var(--muted); margin-bottom:16px; font-size:15.5px;}
+  .about-grid strong{color:var(--text);}
+  .diff-box{
+    background:var(--panel); border:1px solid var(--border); border-left:3px solid var(--pending);
+    border-radius:var(--radius); padding:16px 18px; margin-top:18px;
+  }
+  .diff-box .tag{font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--pending); text-transform:uppercase; letter-spacing:.05em; display:block; margin-bottom:8px;}
+  .diff-box p{color:var(--muted); font-size:14px; margin-bottom:0;}
+  .side-card{background:var(--panel); border:1px solid var(--border); border-radius:var(--radius); padding:18px 20px; margin-bottom:16px;}
+  .side-card h3{font-size:13px; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); font-family:'JetBrains Mono', monospace; font-weight:600; margin-bottom:12px;}
+  .pill-list{display:flex; flex-wrap:wrap; gap:8px;}
+  .pill{
+    font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--text);
+    background:var(--panel-2); border:1px solid var(--border); padding:5px 10px; border-radius:4px;
+  }
+  .meta-row{display:flex; justify-content:space-between; font-size:14px; padding:6px 0; border-bottom:1px solid var(--border);}
+  .meta-row:last-child{border-bottom:none;}
+  .meta-row span:first-child{color:var(--muted);}
+
+  /* ---------- EXPERIENCE / TIMELINE ---------- */
+  .timeline{border-left:1px solid var(--border); margin-left:6px;}
+  .t-item{position:relative; padding:0 0 30px 26px;}
+  .t-item:last-child{padding-bottom:0;}
+  .t-item::before{
+    content:""; position:absolute; left:-6px; top:4px; width:11px; height:11px;
+    border-radius:50%; background:var(--ink); border:2px solid var(--pass);
+  }
+  .t-item.past::before{border-color:var(--muted);}
+  .t-head{display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin-bottom:6px;}
+  .t-head h3{font-size:17px;}
+  .t-date{font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--muted);}
+  .t-role{color:var(--muted); font-size:14px; margin-bottom:10px;}
+  .t-item ul{list-style:none; color:var(--muted); font-size:14.5px;}
+  .t-item ul li{position:relative; padding-left:18px; margin-bottom:6px;}
+  .t-item ul li::before{content:"›"; position:absolute; left:0; color:var(--pass); font-family:'JetBrains Mono', monospace;}
+
+  /* ---------- SKILLS ---------- */
+  .skills-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:16px;}
+  .skill-card{background:var(--panel); border:1px solid var(--border); border-radius:var(--radius); padding:18px 20px;}
+  .skill-card h3{font-size:13px; font-family:'JetBrains Mono', monospace; text-transform:uppercase; letter-spacing:.05em; color:var(--pass); margin-bottom:12px;}
+  .skill-card ul{list-style:none; font-size:14px; color:var(--text);}
+  .skill-card ul li{padding:4px 0; display:flex; align-items:center; gap:8px;}
+  .skill-card ul li::before{content:"✓"; color:var(--pass); font-family:'JetBrains Mono', monospace; font-size:12px;}
+
+  /* ---------- PROJECTS ---------- */
+  .proj-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:18px;}
+  .proj-card{background:var(--panel); border:1px solid var(--border); border-radius:var(--radius); padding:20px; display:flex; flex-direction:column; transition:border-color .15s ease, transform .15s ease;}
+  .proj-card:hover{border-color:var(--pass); transform:translateY(-2px);}
+  .proj-top{display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px;}
+  .proj-top h3{font-size:16px;}
+  .status{font-family:'JetBrains Mono', monospace; font-size:10px; padding:3px 7px; border-radius:4px; text-transform:uppercase; font-weight:700; white-space:nowrap;}
+  .status.passed{background:rgba(74,222,148,0.12); color:var(--pass); border:1px solid rgba(74,222,148,0.35);}
+  .proj-card p{color:var(--muted); font-size:14px; flex-grow:1; margin-bottom:14px;}
+  .proj-tags{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:14px;}
+  .proj-tags span{font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--muted); background:var(--panel-2); padding:3px 7px; border-radius:4px;}
+  .proj-link{font-family:'JetBrains Mono', monospace; font-size:13px; font-weight:600;}
+
+  /* ---------- CERTIFICATIONS ---------- */
+  .cert-list{display:flex; flex-direction:column; gap:12px;}
+  .cert-row{
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+    background:var(--panel); border:1px solid var(--border); border-radius:var(--radius);
+    padding:14px 18px;
+  }
+  .cert-row .name{font-size:14.5px;}
+  .cert-row .sub{color:var(--muted); font-size:13px;}
+
+  /* ---------- CONTACT / FOOTER ---------- */
+  footer{border-top:1px solid var(--border); padding:56px 0 40px;}
+  .contact-box{
+    background:var(--panel); border:1px solid var(--border); border-radius:var(--radius);
+    padding:36px; text-align:center;
+  }
+  .contact-box h2{font-size:24px; margin-bottom:10px;}
+  .contact-box p{color:var(--muted); margin-bottom:24px; font-size:15px;}
+  .contact-links{display:flex; flex-wrap:wrap; justify-content:center; gap:12px; margin-bottom:8px;}
+  .footnote{text-align:center; color:var(--muted); font-size:12.5px; margin-top:28px; font-family:'JetBrains Mono', monospace;}
+
+  @media (max-width:760px){
+    .about-grid{grid-template-columns:1fr;}
+    nav ul{gap:16px;}
+    nav ul li:nth-child(n+3){display:none;}
+    .suite-path{display:none;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .cursor{animation:none;}
+    html{scroll-behavior:auto;}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="brand">luiz<span>@</span>qa</div>
+    <ul>
+      <li><a href="#sobre">Sobre</a></li>
+      <li><a href="#experiencia">Experiência</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#projetos">Projetos</a></li>
+      <li><a href="#contato">Contato</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Disponível para oportunidades</div>
+    <h1>Luiz Melque Almeida de Jesus</h1>
+    <p class="role">QA Analyst Jr. — testes manuais, testes de API e automação com Cypress &amp; Playwright.</p>
+    <p class="loc">📍 Cruz das Almas, Bahia, Brasil — disponível para remoto</p>
+
+    <div class="terminal" role="img" aria-label="Terminal simulando a execução de uma suíte de testes com as principais competências de Luiz: testes manuais aprovados, testes de API aprovados, automação com Cypress e Playwright aprovada, e certificação CTFL em andamento.">
+      <div class="terminal-bar">
+        <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+        <span class="terminal-title">luiz-melque — qa-suite.log</span>
+      </div>
+      <div class="terminal-body" id="terminalBody"></div>
+    </div>
+
+    <div class="hero-cta">
+      <a class="btn btn-primary" href="mailto:luizmelque.qa@gmail.com">E-mail</a>
+      <a class="btn btn-ghost" href="https://linkedin.com/in/luizmelque-qa-tester-software" target="_blank" rel="noopener">LinkedIn</a>
+      <a class="btn btn-ghost" href="https://github.com/luizmelque" target="_blank" rel="noopener">GitHub</a>
+      <a class="btn btn-ghost" href="curriculo-luiz-melque.pdf" download>Baixar CV ↓</a>
+    </div>
+  </div>
+</header>
+
+<section id="sobre">
+  <div class="wrap">
+    <div class="suite-head">
+      <h2>Sobre</h2>
+      <span class="suite-tag">passed</span>
+      <span class="suite-path mono">suites/about.spec</span>
+    </div>
+    <div class="about-grid">
+      <div>
+        <p>Sou estudante de <strong>Análise e Desenvolvimento de Sistemas</strong> (UNIFACS, conclusão prevista em 2026) e atuo em <strong>QA</strong>, com foco em testes manuais, exploratórios, análise de requisitos e automação básica com Selenium e Cypress. Tenho vivência em ambientes ágeis (Scrum) e estou em preparação para a certificação <strong>CTFL (ISTQB)</strong>.</p>
+        <p><strong>Objetivo:</strong> uma posição como Analista de Teste / QA Jr, contribuindo com validação de processos e qualidade das entregas.</p>
+        <div class="diff-box">
+          <span class="tag">Diferencial</span>
+          <p>Antes e durante a migração para QA, administrei uma loja do ramo agropecuário por 1 ano (PDV, ERP, estoque e rotinas financeiras) e atuo como impressor digital, fazendo controle de qualidade de arquivos e materiais antes da entrega. Foi identificando falhas e inconsistências nesses sistemas de gestão, no dia a dia, que nasceu meu interesse por testes de software.</p>
+        </div>
+      </div>
+      <div>
+        <div class="side-card">
+          <h3>Soft skills</h3>
+          <div class="pill-list">
+            <span class="pill">Pensamento analítico</span>
+            <span class="pill">Atenção aos detalhes</span>
+            <span class="pill">Comunicação</span>
+            <span class="pill">Trabalho em equipe</span>
+            <span class="pill">Proatividade</span>
+            <span class="pill">Organização</span>
+          </div>
+        </div>
+        <div class="side-card">
+          <h3>Info</h3>
+          <div class="meta-row"><span>Inglês</span><span>Intermediário</span></div>
+          <div class="meta-row"><span>Metodologias</span><span>Scrum, SDLC</span></div>
+          <div class="meta-row"><span>Formação</span><span>ADS (UNIFACS) — 2026</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="experiencia">
+  <div class="wrap">
+    <div class="suite-head">
+      <h2>Experiência</h2>
+      <span class="suite-tag">passed</span>
+      <span class="suite-path mono">suites/experience.spec</span>
+    </div>
+    <div class="timeline">
+      <div class="t-item">
+        <div class="t-head">
+          <h3>Instituto Residência Travessia</h3>
+          <span class="t-date">mar 2026 — atual</span>
+        </div>
+        <p class="t-role">Voluntário em Qualidade de Software (QA) · Remoto</p>
+        <ul>
+          <li>Testes manuais e exploratórios em projetos sociais e digitais da instituição</li>
+          <li>Análise de requisitos e criação de casos de teste</li>
+          <li>Registro e gestão de defeitos em ferramentas de controle de qualidade</li>
+          <li>Atuação em ambiente ágil, com ciclos de validação iterativos</li>
+        </ul>
+      </div>
+      <div class="t-item">
+        <div class="t-head">
+          <h3>Graf Gráfica</h3>
+          <span class="t-date">jun 2024 — atual</span>
+        </div>
+        <p class="t-role">Impressor Digital · Cruz das Almas - BA</p>
+        <ul>
+          <li>Controle de qualidade de arquivos antes da impressão (cores, dimensões, resolução)</li>
+          <li>Checagem de acabamento e identificação de falhas antes da entrega ao cliente</li>
+          <li>Gestão da fila de impressão e das ordens de serviço</li>
+        </ul>
+      </div>
+      <div class="t-item past">
+        <div class="t-head">
+          <h3>Pandora Rações (Agropet)</h3>
+          <span class="t-date">jan 2023 — jan 2024</span>
+        </div>
+        <p class="t-role">Proprietário e Gestor · Cruz das Almas - BA</p>
+        <ul>
+          <li>Administração completa da loja, com uso diário de PDV e ERP</li>
+          <li>Gestão de estoque, frente de caixa e rotinas financeiras/contábeis</li>
+          <li>Identificação de falhas no sistema de gestão — o que despertou o interesse por testes de software</li>
+        </ul>
+      </div>
+      <div class="t-item past">
+        <div class="t-head">
+          <h3>Hiper São Paulo</h3>
+          <span class="t-date">jul 2022 — out 2022</span>
+        </div>
+        <p class="t-role">Separador de Mercadorias / Frente de Caixa (PDV) · Cruz das Almas - BA</p>
+        <ul>
+          <li>Registro de vendas, formas de pagamento e emissão de cupom fiscal</li>
+          <li>Conferência de caixa e tratamento de erros de leitura/registro de produtos</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="skills">
+  <div class="wrap">
+    <div class="suite-head">
+      <h2>Skills</h2>
+      <span class="suite-tag">passed</span>
+      <span class="suite-path mono">suites/skills.spec</span>
+    </div>
+    <div class="skills-grid">
+      <div class="skill-card">
+        <h3>Testes &amp; QA</h3>
+        <ul>
+          <li>Testes manuais, funcionais, exploratórios</li>
+          <li>Testes de regressão</li>
+          <li>Criação e execução de casos de teste</li>
+          <li>Registro e gestão de bugs</li>
+        </ul>
+      </div>
+      <div class="skill-card">
+        <h3>Automação (nível básico)</h3>
+        <ul>
+          <li>Selenium WebDriver</li>
+          <li>Cypress</li>
+          <li>Python &amp; Pytest</li>
+        </ul>
+      </div>
+      <div class="skill-card">
+        <h3>Sistemas de negócio</h3>
+        <ul>
+          <li>PDV (frente de caixa)</li>
+          <li>ERP &amp; controle de estoque</li>
+          <li>Rotinas financeiras/contábeis</li>
+        </ul>
+      </div>
+      <div class="skill-card">
+        <h3>Ferramentas</h3>
+        <ul>
+          <li>Jira &amp; Trello</li>
+          <li>Postman</li>
+          <li>Git &amp; GitHub</li>
+          <li>Excel / Google Sheets</li>
+        </ul>
+      </div>
+      <div class="skill-card">
+        <h3>Tecnologias de apoio</h3>
+        <ul>
+          <li>SQL básico</li>
+          <li>PostgreSQL (noções)</li>
+          <li>HTML básico</li>
+        </ul>
+      </div>
+      <div class="skill-card">
+        <h3>Metodologias</h3>
+        <ul>
+          <li>Scrum &amp; ágil</li>
+          <li>SDLC</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="projetos">
+  <div class="wrap">
+    <div class="suite-head">
+      <h2>Projetos</h2>
+      <span class="suite-tag">passed</span>
+      <span class="suite-path mono">suites/projects.spec</span>
+    </div>
+    <div class="proj-grid">
+
+      <div class="proj-card">
+        <div class="proj-top">
+          <h3>Projeto Shopee (Simulado)</h3>
+          <span class="status passed">passed</span>
+        </div>
+        <p>Testes manuais funcionais e exploratórios em app simulando e-commerce: plano de testes, casos de teste, relatórios de bugs com evidências e priorização por severidade, além de automação básica de login com Selenium e Python.</p>
+        <div class="proj-tags"><span>Selenium</span><span>Python</span><span>Testes manuais</span></div>
+        <a class="proj-link" href="https://github.com/luizmelque" target="_blank" rel="noopener">Ver repositório →</a>
+      </div>
+
+      <div class="proj-card">
+        <div class="proj-top">
+          <h3>SauceDemo App</h3>
+          <span class="status passed">passed</span>
+        </div>
+        <p>Testes exploratórios e funcionais nos fluxos de login, carrinho e checkout, com automação de login em Cypress e relatório final com evidências visuais e recomendações.</p>
+        <div class="proj-tags"><span>Cypress</span><span>Testes exploratórios</span></div>
+        <a class="proj-link" href="https://github.com/luizmelque" target="_blank" rel="noopener">Ver repositório →</a>
+      </div>
+
+      <div class="proj-card">
+        <div class="proj-top">
+          <h3>Checklist &amp; Matriz de Testes — Login</h3>
+          <span class="status passed">passed</span>
+        </div>
+        <p>Checklist e matriz de testes de login e cadastro baseados em requisitos funcionais e critérios de aceitação, com registro e gestão de defeitos em Jira e Trello.</p>
+        <div class="proj-tags"><span>Jira</span><span>Trello</span><span>Documentação</span></div>
+        <a class="proj-link" href="https://github.com/luizmelque" target="_blank" rel="noopener">Ver repositório →</a>
+      </div>
+
+      <div class="proj-card">
+        <div class="proj-top">
+          <h3>Portfolio QA</h3>
+          <span class="status passed">passed</span>
+        </div>
+        <p>Este portfólio, hospedado no GitHub Pages, reunindo experiência, skills e projetos de QA.</p>
+        <div class="proj-tags"><span>HTML/CSS</span><span>GitHub Pages</span></div>
+        <a class="proj-link" href="https://github.com/luizmelque" target="_blank" rel="noopener">Ver repositório →</a>
+      </div>
+
+    </div>
+    <p class="footnote" style="text-align:left; margin-top:18px;">// atualize os links acima para apontar direto para cada repositório</p>
+  </div>
+</section>
+
+<section id="certificacoes">
+  <div class="wrap">
+    <div class="suite-head">
+      <h2>Formação &amp; certificações</h2>
+      <span class="suite-tag pending">in progress</span>
+      <span class="suite-path mono">suites/certifications.spec</span>
+    </div>
+    <div class="cert-list">
+      <div class="cert-row">
+        <div>
+          <div class="name">Análise e Desenvolvimento de Sistemas (Tecnólogo)</div>
+          <div class="sub">UNIFACS — conclusão prevista em 2026</div>
+        </div>
+        <span class="status passed">cursando</span>
+      </div>
+      <div class="cert-row">
+        <div>
+          <div class="name">CTFL — ISTQB Foundation Level</div>
+          <div class="sub">Curso preparatório com Leonardo Carvalho</div>
+        </div>
+        <span class="status" style="background:rgba(232,179,57,0.12); color:var(--pending); border:1px solid rgba(232,179,57,0.35);">em andamento</span>
+      </div>
+      <div class="cert-row">
+        <div>
+          <div class="name">Testes de Software para Iniciantes</div>
+          <div class="sub">Udemy</div>
+        </div>
+        <span class="status passed">concluído</span>
+      </div>
+      <div class="cert-row">
+        <div>
+          <div class="name">Qualidade de Software</div>
+          <div class="sub">Processos de qualidade, boas práticas, ciclo de testes e SDLC</div>
+        </div>
+        <span class="status passed">concluído</span>
+      </div>
+      <div class="cert-row">
+        <div>
+          <div class="name">QA Manual</div>
+          <div class="sub">Rafaella Ballerini</div>
+        </div>
+        <span class="status passed">concluído</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer id="contato">
+  <div class="wrap">
+    <div class="contact-box">
+      <h2>Vamos conversar?</h2>
+      <p>Aberto a oportunidades como QA Júnior — remoto, híbrido ou presencial em Salvador.</p>
+      <div class="contact-links">
+        <a class="btn btn-primary" href="mailto:luizmelque.qa@gmail.com">luizmelque.qa@gmail.com</a>
+        <a class="btn btn-ghost" href="https://linkedin.com/in/luizmelque-qa-tester-software" target="_blank" rel="noopener">LinkedIn</a>
+        <a class="btn btn-ghost" href="https://github.com/luizmelque" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+    <p class="footnote">$ echo "obrigado por visitar" — build gerado para GitHub Pages</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  const body = document.getElementById('terminalBody');
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const command = "npm test -- --suite=luiz-melque";
+  const results = [
+    {type:'pass', text:'Testes manuais (funcionais, exploratórios, regressão)'},
+    {type:'pass', text:'Testes de API com Postman'},
+    {type:'pass', text:'Automação com Cypress & Playwright'},
+    {type:'pending', text:'Certificação CTFL (ISTQB) — em andamento'},
+  ];
+
+  function renderStatic(){
+    let html = `<div class="terminal-line"><span class="prompt-char">$</span> <span class="cmd-text">${command}</span></div>`;
+    results.forEach(r=>{
+      const icon = r.type === 'pass' ? '✓' : '⧗';
+      html += `<div class="out-line ${r.type}"><span class="icon">${icon}</span><span class="label">${r.text}</span></div>`;
+    });
+    html += `<div class="summary-line">3 passed, 1 in progress — <b>ready for opportunities</b></div>`;
+    body.innerHTML = html;
+  }
+
+  if(reduced){
+    renderStatic();
+    return;
+  }
+
+  let i = 0;
+  const cmdLine = document.createElement('div');
+  cmdLine.className = 'terminal-line';
+  cmdLine.innerHTML = '<span class="prompt-char">$</span> <span class="cmd-text"></span><span class="cursor"></span>';
+  body.appendChild(cmdLine);
+  const cmdSpan = cmdLine.querySelector('.cmd-text');
+
+  function typeCmd(){
+    if(i < command.length){
+      cmdSpan.textContent += command.charAt(i);
+      i++;
+      setTimeout(typeCmd, 38);
+    } else {
+      cmdLine.querySelector('.cursor').remove();
+      setTimeout(printResults, 300);
+    }
+  }
+
+  let r = 0;
+  function printResults(){
+    if(r < results.length){
+      const item = results[r];
+      const line = document.createElement('div');
+      line.className = `out-line ${item.type}`;
+      line.style.opacity = '0';
+      line.style.transition = 'opacity .25s ease';
+      const icon = item.type === 'pass' ? '✓' : '⧗';
+      line.innerHTML = `<span class="icon">${icon}</span><span class="label">${item.text}</span>`;
+      body.appendChild(line);
+      requestAnimationFrame(()=>{ line.style.opacity = '1'; });
+      r++;
+      setTimeout(printResults, 260);
+    } else {
+      const summary = document.createElement('div');
+      summary.className = 'summary-line';
+      summary.style.opacity = '0';
+      summary.style.transition = 'opacity .3s ease';
+      summary.innerHTML = '3 passed, 1 in progress — <b>ready for opportunities</b>';
+      body.appendChild(summary);
+      requestAnimationFrame(()=>{ summary.style.opacity = '1'; });
+    }
+  }
+
+  setTimeout(typeCmd, 400);
+})();
+</script>
+
+</body>
+</html>
